@@ -22,9 +22,9 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-app.get("/", (req, res) => {
+/*app.get("/", (req, res) => {
   res.send("Hello!");
-});
+});*/
 
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
@@ -32,11 +32,11 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);
+  const shortURL = generateRandomString();
   const longURL= req.body.longURL
-  urlDatabase[generateRandomString()]= longURL
+  urlDatabase[shortURL]= longURL
   console.log(urlDatabase)
-  res.send("Ok");         
+  res.redirect(`/urls/${shortURL}`);         
 });
 
 app.get("/urls/new", (req, res) => {
@@ -53,9 +53,9 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/hello", (req, res) => {
+/*app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
+});*/
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
