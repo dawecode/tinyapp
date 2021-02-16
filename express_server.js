@@ -52,6 +52,12 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+app.post('/urls/:id', (req, res) => {
+  let longURL = req.body.longURL
+  //console.log(req.body.longURL);
+  urlDatabase[req.params.id] = longURL;
+  res.redirect('/urls');
+})
 
 app.post('/urls/:shortURL/delete', (req, res) => {
   console.log("DELETE ROUTE HAS BEEN HIT");
