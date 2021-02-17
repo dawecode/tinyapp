@@ -24,6 +24,14 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+//register form 
+app.get("/register", (req, res) => {
+  const templateVars = { 
+  username: req.cookies["username"]
+  };
+  res.render("urls_registration",templateVars);
+});
+
 //main page
 app.get("/urls", (req, res) => {
   const templateVars = { 
@@ -39,7 +47,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-
+//new URLS 
 app.get("/urls/new", (req, res) => {
   const templateVars = { 
   username: req.cookies["username"]
@@ -62,7 +70,7 @@ app.get("/urls.json", (req, res) => {
 });
 
 
-app.post('/urls/:id', (req, res) => {
+app.post("/urls/:id", (req, res) => {
   let longURL = req.body.longURL
   console.log(req.body.longURL);
   urlDatabase[req.params.id] = longURL;
@@ -79,21 +87,21 @@ app.post("/urls", (req, res) => {
 });
 
 
-app.post('/urls/:shortURL/delete', (req, res) => {
+app.post("/urls/:shortURL/delete", (req, res) => {
   console.log("DELETE ROUTE HAS BEEN HIT");
   console.log(req.params.shortURL);
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');
 })
 
-app.post('/login', (req, res) => {
+app.post("/login", (req, res) => {
   let cookie = req.body.username
   res.cookie("username",cookie);
   res.redirect('/urls');
 })
 
 
-app.post('/logout', (req, res) => {
+app.post("/logout", (req, res) => {
   res.clearCookie('username');
   res.redirect('/urls');
 })
