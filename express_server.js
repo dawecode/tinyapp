@@ -22,6 +22,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 //cookie parser
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+// helper functions 
+const { findEmail } = require('./helpers/userFunctions')
 
 // url Database 
 const urlDatabase = {
@@ -47,7 +49,7 @@ const users = {
 //login form 
 app.get("/login", (req, res) => {
   const templateVars = { 
-  username: req.cookies["username"]
+  user: users[req.cookies["user_id"]]
   };
   res.render("urls_login",templateVars);
 });
@@ -55,7 +57,7 @@ app.get("/login", (req, res) => {
 //register form 
 app.get("/register", (req, res) => {
   const templateVars = { 
-  username: req.cookies["username"]
+  user: users[req.cookies["user_id"]]
   };
   res.render("urls_registration",templateVars);
 });
@@ -64,7 +66,7 @@ app.get("/register", (req, res) => {
 app.get("/urls", (req, res) => {
   const templateVars = { 
     urls: urlDatabase,
-    username: req.cookies["username"]
+    user: users[req.cookies["user_id"]]
   };
   res.render("urls_index", templateVars);
 });
@@ -78,7 +80,7 @@ app.get("/u/:shortURL", (req, res) => {
 //new URLS 
 app.get("/urls/new", (req, res) => {
   const templateVars = { 
-  username: req.cookies["username"]
+  user: users[req.cookies["user_id"]]
   };
   res.render("urls_new",templateVars);
 });
@@ -88,7 +90,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    username: req.cookies["username"]
+    user: users[req.cookies["user_id"]]
   };
   res.render("urls_show", templateVars);
 });
@@ -103,19 +105,26 @@ app.post("/register", (req, res) => {
   const newUserID = generateRandomString();
   const email = req.body.email
   const password = req.body.password;
-  const user = {
+  const userObj = {
     id : newUserID,
     email : email,
     password : password
   }; 
-  users[newUserID] = user;
   console.log(users);
 
-  if (user.email === "" | user.password === ""){
-    res.send("400 Bad Request ")
+  const userEmail = findEmail(email, users);
+  console.log(userEmail);
+  if (userObj.email === "" || userObj.password === ""){
+   
+    res.send("400 error ! Bad request");
+  } else if  (!userEmail) {
+    console.log("hello");
+    users[newUserID] = userObj;
+    res.cookie("user_id", newUserID);
+    res.redirect("/urls");
+  } else {
+    res.send("400 error ! Bad request");
   }
-  res.cookie("user_id", newUserID);
-  res.redirect("/urls");         
 });
 
 
@@ -146,14 +155,25 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  let cookie = req.body.username;
-  res.cookie("username",cookie);
-  res.redirect("/urls");
+  const email = req.body.email
+  const password = req.body.password;
+  const userEmail = findEmail(email, users);
+  console.log(userEmail);
+  if (email !== userEmail) {
+    res.send("403 Forbitten ! Please register");
+  } else if (email === userEmail) {
+    if (users[key].password === password){
+      res.cookie("user_id", users.id);
+      res.redirect("/urls");
+    } else {
+    res.send("400 error ! Bad request");
+    }
+  }
 })
 
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect("/urls");
 })
 
