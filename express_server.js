@@ -25,10 +25,9 @@ app.use(cookieParser());
 // helper functions 
 const { findEmail, findPassword, findUserID} = require('./helpers/userFunctions')
 
-// url Database 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
 // user database 
@@ -64,6 +63,10 @@ app.get("/register", (req, res) => {
 
 //main page
 app.get("/urls", (req, res) => {
+  //create a list of urls associated with the logged in user
+  // pass that list of urls to template vars instead of urldatabase 
+  // use the user_id cookie to figure out which user is making the resquest
+  // is it a user, and who is it 
   const templateVars = { 
     urls: urlDatabase,
     user: users[req.cookies["user_id"]]
@@ -79,10 +82,16 @@ app.get("/u/:shortURL", (req, res) => {
 
 //new URLS 
 app.get("/urls/new", (req, res) => {
+// user should not see this page if not logged in 
+console.log(req.cookies)
   const templateVars = { 
   user: users[req.cookies["user_id"]]
   };
-  res.render("urls_new",templateVars);
+  if (!req.cookies.user_id){
+   res.redirect("/login")
+  } else {
+    res.render("urls_new",templateVars);
+  };
 });
 
 //edit / show tiny url 
