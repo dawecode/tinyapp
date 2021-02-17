@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 // helper functions 
-const { findEmail } = require('./helpers/userFunctions')
+const { findEmail, findPassword, findUserID} = require('./helpers/userFunctions')
 
 // url Database 
 const urlDatabase = {
@@ -159,21 +159,23 @@ app.post("/login", (req, res) => {
   const password = req.body.password;
   const userEmail = findEmail(email, users);
   console.log(userEmail);
-  if (email !== userEmail) {
-    res.send("403 Forbitten ! Please register");
-  } else if (email === userEmail) {
-    if (users[key].password === password){
-      res.cookie("user_id", users.id);
+  const userPassword = findPassword(email,users);
+  if (email === userEmail) {
+    if (password === userPassword){
+      const userID = findUserID(email,users)
+      res.cookie("user_id", userID);
       res.redirect("/urls");
     } else {
-    res.send("400 error ! Bad request");
+    res.send("403 Forbidden");
     }
+  } else {
+    res.send("403 Forbidden");
   }
 })
 
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_id');
+  res.clearCookie("user_id");
   res.redirect("/urls");
 })
 

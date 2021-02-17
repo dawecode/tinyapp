@@ -1,5 +1,5 @@
 
-//find email of user 
+//check to see if email exist 
 const findEmail = (email, users) => {
   for (let key in users) {
     if (email === users[key].email) {
@@ -9,7 +9,24 @@ const findEmail = (email, users) => {
   return undefined;
 };
 
+//check to see if password exist
+const findPassword = (email, users) => {
+  for (let key in users) {
+    if (email === users[key].email) {
+      return users[key].password ;
+    }
+  }
+  return undefined;
+};
 
+const findUserID = (email, users) => {
+  for (let key in users) {
+    if (email === users[key].email) {
+      return users[key].id ;
+    }
+  }
+  return undefined;
+};
 
 
 
@@ -42,4 +59,4 @@ const validateUser = (email, password, userDB) => {
   }
 }
 
-module.exports = { validateUser, findEmail }
+module.exports = { findEmail, findPassword, findUserID }
