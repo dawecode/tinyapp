@@ -11,6 +11,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 //cookie parser
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+// password hasher 
+const bcrypt = require('bcrypt');
 // helper functions 
 const { generateRandomString,findEmail, findPassword, findUserID, urlsForUser} = require("./helpers/userFunctions")
 
@@ -20,12 +22,12 @@ const urlDatabase = {
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
-// user database 
+// user database
 const users = { 
   "aJ48lW": {
     id: "aJ48lW", 
     email: "b@b.com", 
-    password: "2"
+    password:  bcrypt.hashSync("2", 10)
   },
 };
 
@@ -99,7 +101,7 @@ app.post("/register", (req, res) => {
   const userObj = {
     id : newUserID,
     email : email,
-    password : password
+    password : bcrypt.hashSync(password, 10)
   }; 
   console.log(users);
 
@@ -154,6 +156,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 //}
 })
 
+//Authentification process
 app.post("/login", (req, res) => {
   const email = req.body.email
   const password = req.body.password;
@@ -161,7 +164,8 @@ app.post("/login", (req, res) => {
   console.log(userEmail);
   const userPassword = findPassword(email,users);
   if (email === userEmail) {
-    if (password === userPassword){
+    if (bcrypt.compareSync(password, userPassword)){
+      console.log(userPassword)
       const userID = findUserID(email,users)
       res.cookie("userID", userID);
       res.redirect("/urls");
