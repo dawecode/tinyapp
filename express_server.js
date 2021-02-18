@@ -17,21 +17,16 @@ const { generateRandomString,findEmail, findPassword, findUserID, urlsForUser} =
 // newdatabase with id 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ54lW" }
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
 // user database 
 const users = { 
-  "userRandomID": {
-    id: "userRandomID", 
+  "aJ48lW": {
+    id: "aJ48lW", 
     email: "b@b.com", 
     password: "2"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "a@a.com", 
-    password: "1"
-  }
 };
 
 
@@ -125,16 +120,16 @@ app.post("/register", (req, res) => {
 
 //when we edit 
 app.post("/urls/:id", (req, res) => {
-  
-
-  console.log(req.body.longURL);
-  //if (urlDatabase[shortURL].userID === ){
-    let longURL = req.body.longURL
+  console.log(urlDatabase[req.params.id].userID)
+  console.log(req.cookies["userID"]);
+  if (urlDatabase[req.params.id].userID === req.cookies["userID"]){
+   let longURL = req.body.longURL;
     urlDatabase[req.params.id].longURL = longURL;
- // } else {
- //   res.status(403).send("Not permitted")
-  //}
-  res.redirect('/urls');
+    res.redirect('/urls');
+  } else {
+    res.status(403).send("Not permitted")
+  }
+ // res.redirect('/urls');
 })
 
 //generate random shurt url + add to database 
@@ -149,10 +144,14 @@ app.post("/urls", (req, res) => {
 
 // delete url 
 app.post("/urls/:shortURL/delete", (req, res) => {
+  //if(urlDatabase[req.params.shortURL].userID === req.cookies["userID"]) {
   console.log("DELETE ROUTE HAS BEEN HIT");
   console.log(req.params.shortURL);
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
+//}else {
+ // res.status(403).send("Not permitted")
+//}
 })
 
 app.post("/login", (req, res) => {
@@ -174,7 +173,7 @@ app.post("/login", (req, res) => {
   }
 })
 
-
+//logout
 app.post("/logout", (req, res) => {
   res.clearCookie("userID");
   res.redirect("/urls");
