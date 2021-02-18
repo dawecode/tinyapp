@@ -1,6 +1,6 @@
 const { assert } = require('chai');
 
-const { findEmail } = require('../userFunctions.js');
+const { getUserByEmail } = require('../helpers.js');
 
 const testUsers = {
   "userRandomID": {
@@ -15,10 +15,17 @@ const testUsers = {
   }
 };
 
-describe('findEmail', function() {
-  it('should return an email if it exist in the database', function() {
-    const user = findEmail("user@example.com", users)
-    const expectedOutput = "user@example.com";
-    assert.equal(user,expectedOutput)
+describe('getUserByEmail', function() {
+  it('should return a user with valid email', function() {
+    const user = getUserByEmail("user@example.com", testUsers);
+    const expectedOutput = "userRandomID"
+    assert.equal(user.id,expectedOutput);
   });
+
+  it('should return undefined if the email is not valid', function() {
+    const user = getUserByEmail("user3@example.com", testUsers);
+    const expectedOutput = undefined;
+    assert.equal(user,expectedOutput);
+  });
+
 });
