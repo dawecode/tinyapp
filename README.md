@@ -6,9 +6,12 @@ This version was made by Catherine Dawe during a bootcamp at Lighthouse Labs. Sh
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
-
+!["Create a new tiny URL page while logged in](https://github.com/dawecode/tinyapp/blob/master/docs/createurl-page.png)
+!["Edit page while logged in"](https://github.com/dawecode/tinyapp/blob/master/docs/edit_page.png)
+!["Login Page"](https://github.com/dawecode/tinyapp/blob/master/docs/login-page.png)
+!["Register page"](https://github.com/dawecode/tinyapp/blob/master/docs/register-page.png)
+!["URLs page when you are logged in"](https://github.com/dawecode/tinyapp/blob/master/docs/urls_pagelogin.png)
+!["URLs page when you are not logged in"](https://github.com/dawecode/tinyapp/blob/master/docs/urls_page.png)
 ## Dependencies
 
 - Node.js
