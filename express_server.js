@@ -93,7 +93,7 @@ app.get("/urls/:shortURL", (req, res) => {
   if (!req.session["userID"]) {
     res.status(400).send("400 error ! Please Login or Register");
   } else if (!urlDatabase[req.params.shortURL]) {
-    res.status(404).send("404 not found! This is URL doesn't exist");  
+    res.status(404).send("404 not found! This URL doesn't exist");  
   } else if (urlDatabase[req.params.shortURL].userID === req.session["userID"]) {
     const templateVars = {
       shortURL: req.params.shortURL,
