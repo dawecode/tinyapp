@@ -90,12 +90,21 @@ app.get("/urls/new", (req, res) => {
 
 //edit / show tiny url
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = {
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL].longURL,
-    user: users[req.session["userID"]]
-  };
-  res.render("urls_show", templateVars);
+  if (!req.session["userID"]) {
+    res.status(400).send("400 error ! Please Login");
+  } else if (urlDatabase[req.params.shortURL].userID === req.session["userID"]) {
+    const templateVars = {
+      shortURL: req.params.shortURL,
+      longURL: urlDatabase[req.params.shortURL].longURL,
+      user: users[req.session["userID"]]
+    };
+    res.render("urls_show", templateVars);
+
+  } else if (urlDatabase[req.params.shortURL].userID !== req.session["userID"]) {
+    res.status(403).send("400 error ! This is not your URL");
+  } else {
+    res.status(400).send("400 error ! Please Login");
+  }
 });
 
 
